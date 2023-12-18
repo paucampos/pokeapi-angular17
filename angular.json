@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "pokedex-angular17": {
+    "pokeapi-angular17": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/pokedex-angular17",
+            "outputPath": "dist/pokeapi-angular17",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -62,10 +62,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "pokedex-angular17:build:production"
+              "buildTarget": "pokeapi-angular17:build:production"
             },
             "development": {
-              "buildTarget": "pokedex-angular17:build:development"
+              "buildTarget": "pokeapi-angular17:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -73,7 +73,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "pokedex-angular17:build"
+            "buildTarget": "pokeapi-angular17:build"
           }
         },
         "test": {

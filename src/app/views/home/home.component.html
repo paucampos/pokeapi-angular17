@@ -8,7 +8,7 @@
         <div class="input-container">
           <div class="input-group mb-3">
             <span class="input-group-text" id="inputGroup-sizing-default">Pokémon</span>
-            <input type="text" [(ngModel)]="pokemonName" placeholder="Search a pokémon..." class="form-control">
+            <input type="text" [(ngModel)]="pokemonName" placeholder="Search a pokémon..." class="form-control" (keydown.enter)="searchPokemon()">
             <button class="btn btn-outline-secondary input-container__btn" type="button"
               (click)="searchPokemon()">Search</button>
           </div>

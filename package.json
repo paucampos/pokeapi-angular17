@@ -1,12 +1,13 @@
 {
-  "name": "pokedex-angular17",
-  "version": "0.0.0",
+  "name": "pokeapi-angular17",
+  "version": "0.0.1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "pre-deploy": "ng build --output-path docs --base-href /pokeapi-angular17/"
   },
   "private": true,
   "dependencies": {
