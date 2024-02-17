@@ -18,3 +18,15 @@ export interface PokemonAbilities {
   is_hidden: boolean;
   slot: number;
 }
+
+export interface PokemonI {
+  name: string;
+  url: string;
+}
+
+export interface PokemonResults {
+  count: number;
+  next: string;
+  previous?: string;
+  results: PokemonI[];
+}

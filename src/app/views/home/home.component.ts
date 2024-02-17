@@ -4,18 +4,24 @@ import { HeaderComponent } from '../../components/header/header.component';
 import { CardPokeComponent } from '../../components/card-poke/card-poke.component';
 import { FailPokeComponent } from '../../components/fail-poke/fail-poke.component';
 import { HttpClient } from '@angular/common/http';
-import { Pokemon } from '../../models/pokedex.model';
+import { Pokemon, PokemonResults } from '../../models/pokedex.model';
 import { LoaderComponent } from '../../components/loader/loader.component';
+import { AsyncPipe } from '@angular/common';
+import { PokemonService } from '../../services/pokemon.service';
+import { Observable } from 'rxjs';
+import { PokemonItemComponent } from '../../components/pokemon-item/pokemon-item.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [
-    HeaderComponent,
+    AsyncPipe,
     CardPokeComponent,
+    HeaderComponent,
     FailPokeComponent,
-    LoaderComponent,
     FormsModule,
+    LoaderComponent,
+    PokemonItemComponent,
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
@@ -27,11 +33,16 @@ export class HomeComponent {
   public pokemon: null | Pokemon = null;
   public POKEAPI_URL_BASE: string = 'https://pokeapi.co/api/v2/pokemon/';
   public loading: boolean = true;
+  public pokemonList$!: Observable<PokemonResults>;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private pokemonService: PokemonService
+  ) {}
 
   ngOnInit(): void {
     this.searchPokemon();
+    this.pokemonList$ = this.pokemonService.getPokemonList();
   }
 
   private pokeNameSanitize(pokeName: string): string {
@@ -42,8 +53,8 @@ export class HomeComponent {
     const pokeName = this.pokeNameSanitize(this.pokemonName);
     this.loading = true;
 
-    this.http.get<void>(this.POKEAPI_URL_BASE + pokeName).subscribe(
-      (data: any) => {
+    this.http.get<void>(this.POKEAPI_URL_BASE + pokeName).subscribe({
+      next: (data: any) => {
         this.pokemon = {
           abilities: data.abilities,
           height: data.height,
@@ -55,11 +66,12 @@ export class HomeComponent {
         };
         this.loading = false;
       },
-      (error: any) => {
-        console.log(error);
+      error: (e) => {
+        console.error('error: ', e);
         this.pokemon = null;
         this.loading = false;
-      }
-    );
+      },
+      complete: () => console.info('complete'),
+    });
   }
 }

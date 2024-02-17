@@ -1,0 +1,12 @@
+.poke-button {
+    background-color: var(--color-primary);
+    padding: 24px;
+    color: whitesmoke;
+    border-radius: 10px;
+    margin: 8px;
+    box-shadow: 6px 3px 10px black;
+    cursor: pointer;
+    &:hover{
+        background-color: var(--color-poke-blue);
+    }
+}
