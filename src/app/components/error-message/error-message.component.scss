@@ -1,0 +1,21 @@
+.error-card {
+  background: var(--color-primary);
+  color: whitesmoke;
+  width: 90%;
+  max-width: 25rem;
+  margin: 0 auto 5rem;
+  padding: 24px;
+  box-shadow: 2px 1px 1rem black;
+  overflow: hidden;
+  border-radius: 0.375rem;
+  -webkit-border-radius: 0.375rem;
+  -moz-border-radius: 0.375rem;
+  -ms-border-radius: 0.375rem;
+  -o-border-radius: 0.375rem;
+
+  &__title {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+}

@@ -8,8 +8,9 @@ import { Pokemon, PokemonResults } from '../../models/pokedex.model';
 import { LoaderComponent } from '../../components/loader/loader.component';
 import { AsyncPipe } from '@angular/common';
 import { PokemonService } from '../../services/pokemon.service';
-import { Observable } from 'rxjs';
+import { EMPTY, Observable, catchError } from 'rxjs';
 import { PokemonItemComponent } from '../../components/pokemon-item/pokemon-item.component';
+import { ErrorMessageComponent } from '../../components/error-message/error-message.component';
 
 @Component({
   selector: 'app-home',
@@ -17,9 +18,10 @@ import { PokemonItemComponent } from '../../components/pokemon-item/pokemon-item
   imports: [
     AsyncPipe,
     CardPokeComponent,
-    HeaderComponent,
+    ErrorMessageComponent,
     FailPokeComponent,
     FormsModule,
+    HeaderComponent,
     LoaderComponent,
     PokemonItemComponent,
   ],
@@ -29,11 +31,12 @@ import { PokemonItemComponent } from '../../components/pokemon-item/pokemon-item
 export class HomeComponent {
   public title: string = 'Pokédex with Angular 17';
   public subtitle: string = 'Based on PokeAPI';
-  public pokemonName: string = 'Mew';
+  public pokemonName: string = '';
   public pokemon: null | Pokemon = null;
   public POKEAPI_URL_BASE: string = 'https://pokeapi.co/api/v2/pokemon/';
   public loading: boolean = true;
   public pokemonList$!: Observable<PokemonResults>;
+  public errorMessage!: string;
 
   constructor(
     private http: HttpClient,
@@ -42,7 +45,12 @@ export class HomeComponent {
 
   ngOnInit(): void {
     this.searchPokemon();
-    this.pokemonList$ = this.pokemonService.getPokemonList();
+    this.pokemonList$ = this.pokemonService.getPokemonList().pipe(
+      catchError((error: string) => {
+        this.errorMessage = error;
+        return EMPTY;
+      })
+    );
   }
 
   private pokeNameSanitize(pokeName: string): string {
@@ -50,10 +58,11 @@ export class HomeComponent {
   }
 
   public searchPokemon(): void {
-    const pokeName = this.pokeNameSanitize(this.pokemonName);
+const pokeName = this.pokeNameSanitize(this.pokemonName);
     this.loading = true;
 
-    this.http.get<void>(this.POKEAPI_URL_BASE + pokeName).subscribe({
+    const pokeRandom = Math.floor(Math.random() * 100);
+    this.http.get<void>(this.POKEAPI_URL_BASE + (pokeName || pokeRandom)).subscribe({
       next: (data: any) => {
         this.pokemon = {
           abilities: data.abilities,
@@ -64,6 +73,7 @@ export class HomeComponent {
           type: data.types[0].type.name,
           weight: data.weight,
         };
+        this.pokemonName = this.pokemon.name;
         this.loading = false;
       },
       error: (e) => {
