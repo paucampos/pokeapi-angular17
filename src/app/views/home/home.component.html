@@ -19,7 +19,7 @@
   <div class="row">
     <div class="col-12">
       @if (pokemon && !loading) {
-      <app-card-poke [data]="pokemon"></app-card-poke>
+        <app-card-poke [data]="pokemon"></app-card-poke>
       } @else if (loading) {
       <app-loader></app-loader>
       } @else { <app-fail-poke></app-fail-poke>

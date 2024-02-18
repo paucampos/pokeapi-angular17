@@ -3,7 +3,6 @@ import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from '../../components/header/header.component';
 import { CardPokeComponent } from '../../components/card-poke/card-poke.component';
 import { FailPokeComponent } from '../../components/fail-poke/fail-poke.component';
-import { HttpClient } from '@angular/common/http';
 import { Pokemon, PokemonResults } from '../../models/pokedex.model';
 import { LoaderComponent } from '../../components/loader/loader.component';
 import { AsyncPipe } from '@angular/common';
@@ -39,7 +38,6 @@ export class HomeComponent {
   public errorMessage!: string;
 
   constructor(
-    private http: HttpClient,
     private pokemonService: PokemonService
   ) {}
 
@@ -58,28 +56,20 @@ export class HomeComponent {
   }
 
   public searchPokemon(): void {
-const pokeName = this.pokeNameSanitize(this.pokemonName);
+    const pokeName = this.pokeNameSanitize(this.pokemonName);
     this.loading = true;
 
     const pokeRandom = Math.floor(Math.random() * 100);
-    this.http.get<void>(this.POKEAPI_URL_BASE + (pokeName || pokeRandom)).subscribe({
-      next: (data: any) => {
-        this.pokemon = {
-          abilities: data.abilities,
-          height: data.height,
-          id: data.id,
-          image: data.sprites?.other?.dream_world?.front_default,
-          name: data.name,
-          type: data.types[0].type.name,
-          weight: data.weight,
-        };
-        this.pokemonName = this.pokemon.name;
+    this.pokemonService.getOnePokemon(pokeName || pokeRandom).subscribe({
+      next: (pokemon) => {
+        this.pokemon = pokemon;
+        this.pokemonName = pokemon.name;
         this.loading = false;
       },
       error: (e) => {
         console.error('error: ', e);
-        this.pokemon = null;
-        this.loading = false;
+            this.pokemon = null;
+            this.loading = false;
       },
       complete: () => console.info('complete'),
     });
