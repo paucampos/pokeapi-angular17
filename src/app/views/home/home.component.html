@@ -26,16 +26,30 @@
       }
     </div>
   </div>
+  <!-- <div>Se guardó en localStorage {{pokemonName | titlecase}} </div>
+  <div>Traer valor de localstorage: {{ pokemonName | localstorage }}</div> -->
 
   @if (pokemonList$ | async; as resultObject) {
   <div class="row">
+    <h5 class="text-center">List</h5>
       @for (pokemon of resultObject.results; track pokemon.name) {
         <div class="col-6 col-md-3 col-lg-2">
           <app-pokemon-item [pokemonInfo]="pokemon"></app-pokemon-item>
         </div>
     }
   </div>
-  } @if (errorMessage) {
+  } 
+  @if (pokeSaved ) {
+  <div class="row">
+    <h5 class="text-center">Saved</h5>
+      @for (poke of pokeSaved; track poke.name) {
+        <div class="col-6 col-md-3 col-lg-2">
+          <app-pokemon-item [pokemonInfo]="{name: poke.name, url: ''}"></app-pokemon-item>
+        </div>
+    }
+  </div>
+  } 
+  @if (errorMessage) {
   <app-error-message [errorMessage]="errorMessage"></app-error-message>
   }
 </div>

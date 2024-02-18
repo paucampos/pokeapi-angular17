@@ -5,11 +5,13 @@ import { CardPokeComponent } from '../../components/card-poke/card-poke.componen
 import { FailPokeComponent } from '../../components/fail-poke/fail-poke.component';
 import { Pokemon, PokemonResults } from '../../models/pokedex.model';
 import { LoaderComponent } from '../../components/loader/loader.component';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, TitleCasePipe } from '@angular/common';
 import { PokemonService } from '../../services/pokemon.service';
 import { EMPTY, Observable, catchError } from 'rxjs';
 import { PokemonItemComponent } from '../../components/pokemon-item/pokemon-item.component';
 import { ErrorMessageComponent } from '../../components/error-message/error-message.component';
+import { LocalstorageService } from '../../services/localstorage.service';
+import { LocalstoragePipe } from '../../pipes/localstorage.pipe';
 
 @Component({
   selector: 'app-home',
@@ -23,6 +25,8 @@ import { ErrorMessageComponent } from '../../components/error-message/error-mess
     HeaderComponent,
     LoaderComponent,
     PokemonItemComponent,
+    LocalstoragePipe,
+    TitleCasePipe,
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
@@ -36,10 +40,18 @@ export class HomeComponent {
   public loading: boolean = true;
   public pokemonList$!: Observable<PokemonResults>;
   public errorMessage!: string;
+  public pokeSaved: Array<Pokemon> = [];
 
   constructor(
-    private pokemonService: PokemonService
-  ) {}
+    private pokemonService: PokemonService,
+    private localStorage: LocalstorageService
+  ) {
+    const items = this.localStorage.getAllItems();
+
+    for (const poke in items) {
+      this.pokeSaved.push(JSON.parse(items[poke]));
+    }
+  }
 
   ngOnInit(): void {
     this.searchPokemon();
@@ -64,12 +76,13 @@ export class HomeComponent {
       next: (pokemon) => {
         this.pokemon = pokemon;
         this.pokemonName = pokemon.name;
+        this.localStorage.setItem(this.pokemonName, JSON.stringify(pokemon));
         this.loading = false;
       },
       error: (e) => {
         console.error('error: ', e);
-            this.pokemon = null;
-            this.loading = false;
+        this.pokemon = null;
+        this.loading = false;
       },
       complete: () => console.info('complete'),
     });
